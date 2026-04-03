@@ -58,8 +58,12 @@ cp .env.example .env
 # Edit .env and paste your GEMINI_API_KEY inside!
 
 # 5. Start the Multi-Agent Hive!
+## MacOS / Linux
 chmod +x start.sh
 ./start.sh
+
+## Windows
+start.bat
 ```
 
 Open **http://localhost:3000** in your browser 🎉
@@ -89,7 +93,8 @@ A2A/
 ├── docker-compose.yml
 ├── Dockerfile
 ├── requirements.txt
-├── start.sh               # Local Bootstrapper
+├── start.sh               # Local Bootstrapper (Mac/Linux)
+├── start.bat              # Local Bootstrapper (Windows)
 └── .env.example
 ```
 
