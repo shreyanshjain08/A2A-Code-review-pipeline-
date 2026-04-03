@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  code-writer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python agents/code_writer/agent.py
+    ports:
+      - "${CODE_WRITER_PORT:-5001}:${CODE_WRITER_PORT:-5001}"
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${CODE_WRITER_PORT:-5001}/.well-known/agent.json"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  code-reviewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python agents/code_reviewer/agent.py
+    ports:
+      - "${CODE_REVIEWER_PORT:-5002}:${CODE_REVIEWER_PORT:-5002}"
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${CODE_REVIEWER_PORT:-5002}/.well-known/agent.json"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  code-refactorer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python agents/code_refactorer/agent.py
+    ports:
+      - "${CODE_REFACTORER_PORT:-5003}:${CODE_REFACTORER_PORT:-5003}"
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${CODE_REFACTORER_PORT:-5003}/.well-known/agent.json"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python orchestrator/server.py
+    ports:
+      - "${ORCHESTRATOR_PORT:-3000}:${ORCHESTRATOR_PORT:-3000}"
+    env_file: .env
+    depends_on:
+      code-writer:
+        condition: service_healthy
+      code-reviewer:
+        condition: service_healthy
+      code-refactorer:
+        condition: service_healthy
+    environment:
+      - CODE_WRITER_PORT=${CODE_WRITER_PORT:-5001}
+      - CODE_REVIEWER_PORT=${CODE_REVIEWER_PORT:-5002}
+      - CODE_REFACTORER_PORT=${CODE_REFACTORER_PORT:-5003}

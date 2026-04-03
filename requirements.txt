@@ -1,0 +1,13 @@
+# A2A SDK
+a2a-sdk[http-server]>=0.3.20
+
+# Google Gemini
+google-generativeai>=0.8.0
+
+# Web server
+fastapi>=0.115.0
+uvicorn>=0.32.0
+
+# Utilities
+python-dotenv>=1.0.0
+httpx>=0.27.0
